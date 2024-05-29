@@ -1,26 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" th:href="@{'/css/output.css'}"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-</head>
-
-<body>
-    <div class="bg-gray-200 w-1/2 p-4 flex flex-col items-center space-y-3 mx-auto mt-4">
-        <h1 class="text-2xl font-bold" data-th-text="${name}">Welcome to home page </h1>
-        <p class="text-xl text-gray-700">Youtube Channel : <span th:text="${youtube}"></span></p>
-        <p>Github Repo : <span th:text="${github}"></span></p>
-
-        <a th:href="${youtubelink}">CLick here to open</a>
-        <p class="text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis repellat blanditiis amet reiciendis, sint officia. Consequuntur, suscipit aspernatur ipsum eum, tempore ipsam aliquid, pariatur voluptate repellat modi dignissimos! Officiis, illum?</p>
-        <div>
-            <button class="px-3 py-2 rounded bg-blue-700 text-white hover:bg-blue-500">Click Here</button>
-        </div>
+<html
+  lang="en"
+  th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+>
+  <head>
+    <title>Home page</title>
+  </head>
+  <body>
+    <div id="content">
+      <h1>Welcome to home page</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur,
+        ratione!
+      </p>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-</body>
+    <script>
+      console.log("Home page");
+    </script>
+  </body>
 </html>
