@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scm.entites.User;
 import com.scm.forms.UserForm;
+import com.scm.helpers.Message;
+import com.scm.helpers.MessageType;
 import com.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -67,20 +71,25 @@ public class PageController {
 
     // Processing register
     @PostMapping("/do-register")
-    public String processRegister(@ModelAttribute UserForm userForm){
-        // System.out.println(userForm);
+    public String processRegister(@ModelAttribute UserForm userForm, HttpSession session){
 
-        User savedUser = User.builder()
-        .name(userForm.getName())
-        .email(userForm.getEmail())
-        .password(userForm.getPassword())
-        .about(userForm.getAbout())
-        .phoneNumber(userForm.getPhoneNumber())
-        .profilePic("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE")
-        .build();
+        User savedUser = new User();
+        savedUser.setName(userForm.getName());
+        savedUser.setEmail(userForm.getEmail());
+        savedUser.setPassword(userForm.getPassword());
+        savedUser.setAbout(userForm.getAbout());
+        savedUser.setPhoneNumber(userForm.getPhoneNumber());
+        savedUser.setProfilePic("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE");
 
         userService.saveUser(savedUser); 
-        System.out.println(savedUser);
+
+        Message message = Message.builder()
+        .content("Registration Successful")
+        .type(MessageType.green)
+        .build();
+
+        session.setAttribute("message", message);
+        // System.out.println(savedUser);
         return "redirect:/register";
     }
 }
