@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.scm.entites.User;
 import com.scm.forms.UserForm;
@@ -18,7 +19,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
@@ -79,32 +79,32 @@ public class PageController {
     }
 
     // Processing register
-    @PostMapping("/do-register")
-    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session){
+    @RequestMapping(value = "/do-register", method = RequestMethod.POST)
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session) {
+        System.out.println("Processing registration");
 
-        System.out.println("Processing Registration");
-
-        if(rBindingResult.hasErrors()){
+        if (rBindingResult.hasErrors()) {
             return "register";
         }
 
-        User savedUser = new User();
-        savedUser.setName(userForm.getName());
-        savedUser.setEmail(userForm.getEmail());
-        savedUser.setPassword(userForm.getPassword());
-        savedUser.setAbout(userForm.getAbout());
-        savedUser.setPhoneNumber(userForm.getPhoneNumber());
-        savedUser.setProfilePic("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE");
 
-        userService.saveUser(savedUser); 
+        User user = new User();
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setAbout(userForm.getAbout());
+        user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setProfilePic("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE");
 
-        Message message = Message.builder()
-        .content("Registration Successful")
-        .type(MessageType.green)
-        .build();
+        User savedUser = userService.saveUser(user);
+
+        System.out.println("user saved :");
+
+        Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
 
         session.setAttribute("message", message);
-        // System.out.println(savedUser);
+
+        // redirectto login page
         return "redirect:/register";
     }
 }
