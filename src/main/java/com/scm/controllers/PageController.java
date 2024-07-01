@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.scm.entites.User;
 import com.scm.forms.UserForm;
@@ -17,18 +18,15 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @Controller
 public class PageController {
 
     @Autowired
     private UserService userService;
-    
+
     @GetMapping("/")
-    public String index(){
+    public String index() {
         return "redirect:/home";
     }
 
@@ -71,40 +69,75 @@ public class PageController {
         return new String("login");
     }
 
+    
+
     @GetMapping("/register")
     public String register(Model model) {
+
         UserForm userForm = new UserForm();
+        // default data bhi daal sakte hai
+        // userForm.setName("Durgesh");
+        // userForm.setAbout("This is about : Write something about yourself");
         model.addAttribute("userForm", userForm);
+
         return "register";
     }
 
-    // Processing register
-    @PostMapping("/do-register")
-    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session){
+    // processing register
 
-        System.out.println("Processing Registration");
+    @RequestMapping(value = "/do-register", method = RequestMethod.POST)
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult,
+            HttpSession session) {
+        System.out.println("Processing registration");
+        // fetch form data
+        // UserForm
+        System.out.println(userForm);
 
-        if(rBindingResult.hasErrors()){
+        // validate form data
+        if (rBindingResult.hasErrors()) {
             return "register";
         }
 
-        User savedUser = new User();
-        savedUser.setName(userForm.getName());
-        savedUser.setEmail(userForm.getEmail());
-        savedUser.setPassword(userForm.getPassword());
-        savedUser.setAbout(userForm.getAbout());
-        savedUser.setPhoneNumber(userForm.getPhoneNumber());
-        savedUser.setProfilePic("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE");
+        // TODO::Validate userForm[Next Video]
 
-        userService.saveUser(savedUser); 
+        // save to database
 
-        Message message = Message.builder()
-        .content("Registration Successful")
-        .type(MessageType.green)
-        .build();
+        // userservice
+
+        // UserForm--> User
+        // User user = User.builder()
+        // .name(userForm.getName())
+        // .email(userForm.getEmail())
+        // .password(userForm.getPassword())
+        // .about(userForm.getAbout())
+        // .phoneNumber(userForm.getPhoneNumber())
+        // .profilePic(
+        // "https://www.learncodewithdurgesh.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdurgesh_sir.35c6cb78.webp&w=1920&q=75")
+        // .build();
+
+        User user = new User();
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setAbout(userForm.getAbout());
+        user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setProfilePic(
+                "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fadinaiqbl%2Fdefault-icon-pfp%2F&psig=AOvVaw3Na6ci5iH0rRN3EnNQZbI3&ust=1717354214327000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOip-JWJu4YDFQAAAAAdAAAAABAE");
+
+        User savedUser = userService.saveUser(user);
+
+        System.out.println("user saved :"+ savedUser);
+
+        // message = "Registration Successful"
+
+        // add the message:
+
+        Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
 
         session.setAttribute("message", message);
-        // System.out.println(savedUser);
+
+        // redirectto login page
         return "redirect:/register";
     }
+
 }
