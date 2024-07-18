@@ -1,6 +1,5 @@
 package com.scm.entites;
 
-import javax.annotation.processing.Generated;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,5 +26,5 @@ public class SocialLink {
     private String title;
 
     @ManyToOne
-    private Contacts contacts;
+    private Contact contacts;
 }
